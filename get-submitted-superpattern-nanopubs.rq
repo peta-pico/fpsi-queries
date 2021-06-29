@@ -1,0 +1,38 @@
+prefix foaf: <http://xmlns.com/foaf/0.1/>
+prefix dct: <http://purl.org/dc/terms/>
+prefix np: <http://www.nanopub.org/nschema#>
+prefix npx: <http://purl.org/nanopub/x/>
+prefix npa: <http://purl.org/nanopub/admin/>
+prefix frbr: <http://purl.org/vocab/frbr/core#>
+prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAeGHhPpt1GLzb_tInb87Wdnvep19Efieot9BBGoN_3TM&param_ReferredObject=http://purl.org/np/>
+
+select distinct ?submitted_np ?authorname ?click_to_add_review where {
+  graph ?submission_np_head {
+    ?submission_np np:hasAssertion ?submission_np_assertion ;
+      np:hasPublicationInfo ?submission_np_pubinfo ;
+      a np:Nanopublication .
+  }
+  graph ?submission_np_assertion {
+    ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
+  }
+  graph ?submission_np_pubinfo {
+    ?submission_np dct:creator ?author .
+  }
+  graph npa:graph {
+    ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
+  }
+  optional { ?author foaf:name ?authorname . }
+
+  filter not exists {
+    graph npa:graph { ?newversion npa:hasHeadGraph ?nh . ?newversion npa:hasValidSignatureForPublicKey ?pubkey . }
+    graph ?nh { ?newversion np:hasPublicationInfo ?ni . }
+    graph ?ni { ?newversion npx:supersedes ?submission_np . }
+  }
+  filter not exists {
+    graph npa:graph { ?retraction npa:hasHeadGraph ?rh . ?retraction npa:hasValidSignatureForPublicKey ?pubkey . }
+    graph ?rh { ?retraction np:hasAssertion ?ra . }
+    graph ?ra { ?somebody npx:retracts ?submission_np . }
+  }
+
+  bind(uri(concat("http://localhost:37373/publish?template=http://purl.org/np/RAeGHhPpt1GLzb_tInb87Wdnvep19Efieot9BBGoN_3TM&param_ReferredObject=", ?submitted_np)) as ?click_to_add_review)
+} order by ?authorname
