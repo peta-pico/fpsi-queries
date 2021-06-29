@@ -34,5 +34,5 @@ select distinct ?submitted_np ?authorname ?click_to_add_review where {
     graph ?ra { ?somebody npx:retracts ?submission_np . }
   }
 
-  bind(uri(concat("http://localhost:37373/publish?template=http://purl.org/np/RAeGHhPpt1GLzb_tInb87Wdnvep19Efieot9BBGoN_3TM&param_ReferredObject=", ?submitted_np)) as ?click_to_add_review)
+  bind(uri(concat("http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=", ?submitted_np)) as ?click_to_add_review)
 } order by ?authorname
