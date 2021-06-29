@@ -1,0 +1,95 @@
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix foaf: <http://xmlns.com/foaf/0.1/>
+prefix dct: <http://purl.org/dc/terms/>
+prefix np: <http://www.nanopub.org/nschema#>
+prefix npx: <http://purl.org/nanopub/x/>
+prefix npa: <http://purl.org/nanopub/admin/>
+prefix frbr: <http://purl.org/vocab/frbr/core#>
+prefix lf: <https://w3id.org/linkflows/reviews/>
+
+select distinct ?class_np ?class_name ?review_np ?reviewer ?aspect ?positivity ?action ?impact ?text where {
+  graph ?submission_np_head {
+    ?submission_np np:hasAssertion ?submission_np_assertion ;
+      np:hasPublicationInfo ?submission_np_pubinfo .
+  }
+  graph ?submission_np_assertion {
+    ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
+  }
+  graph ?submission_np_pubinfo {
+    ?submission_np dct:creator ?_author_orcid_iri .
+  }
+  graph npa:graph {
+    ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
+  }
+
+  filter not exists {
+    graph npa:graph { ?newversion npa:hasHeadGraph ?nh . ?newversion npa:hasValidSignatureForPublicKey ?pubkey . }
+    graph ?nh { ?newversion np:hasPublicationInfo ?ni . }
+    graph ?ni { ?newversion npx:supersedes ?submission_np . }
+  }
+  filter not exists {
+    graph npa:graph { ?retraction npa:hasHeadGraph ?rh . ?retraction npa:hasValidSignatureForPublicKey ?pubkey . }
+    graph ?rh { ?retraction np:hasAssertion ?ra . }
+    graph ?ra { ?somebody npx:retracts ?submission_np . }
+  }
+
+  graph ?sp_np_head {
+    ?sp_np np:hasAssertion ?sp_np_assertion .
+  }
+  graph ?sp_np_assertion {
+    ?spi ?p ?class .
+  }
+  graph npa:graph {
+    ?sp_np npa:hasValidSignatureForPublicKey ?pubkey .
+  }
+
+  graph ?class_np_head {
+    ?class_np np:hasAssertion ?class_np_assertion ;
+      np:hasPublicationInfo ?class_np_pubinfo .
+  }
+  graph ?class_np_assertion {
+    ?class rdfs:label ?class_name .
+  }
+  graph ?class_np_pubinfo {
+    ?class_np npx:introduces ?class .
+  }
+  graph npa:graph {
+    ?class_np npa:hasValidSignatureForPublicKey ?pubkey .
+  }
+
+  graph ?review_np_head {
+    ?review_np np:hasAssertion ?review_np_assertion ;
+      np:hasPublicationInfo ?review_np_pubinfo ;
+      a np:Nanopublication .
+  }
+  graph ?review_np_assertion {
+    ?r a lf:ReviewComment .
+    ?r lf:refersTo ?class_np .
+    ?r a ?aspect .
+    values ?aspect { lf:ContentComment lf:StyleComment lf:SyntaxComment }
+    ?r a ?positivity .
+    values ?positivity { lf:PositiveComment lf:NeutralComment lf:NegativeComment }
+    ?r a ?action .
+    values ?action { lf:ActionNeededComment lf:NoActionNeededComment lf:SuggestionComment }
+    ?r lf:hasImpact ?impact .
+    ?r lf:hasCommentText ?text .
+  }
+  graph ?review_np_pubinfo {
+    ?review_np dct:creator ?reviewer .
+  }
+  graph npa:graph {
+    ?review_np npa:hasValidSignatureForPublicKey ?reviewer_pubkey .
+  }
+
+  filter not exists {
+    graph npa:graph { ?newversion npa:hasHeadGraph ?nh . ?newversion npa:hasValidSignatureForPublicKey ?reviewer_pubkey . }
+    graph ?nh { ?newversion np:hasPublicationInfo ?ni . }
+    graph ?ni { ?newversion npx:supersedes ?review_np . }
+  }
+  filter not exists {
+    graph npa:graph { ?retraction npa:hasHeadGraph ?rh . ?retraction npa:hasValidSignatureForPublicKey ?reviewer_pubkey . }
+    graph ?rh { ?retraction np:hasAssertion ?ra . }
+    graph ?ra { ?somebody npx:retracts ?review_np . }
+  }
+
+} order by ?submitted_np ?review_np
