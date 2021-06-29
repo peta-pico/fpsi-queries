@@ -4,7 +4,7 @@ prefix np: <http://www.nanopub.org/nschema#>
 prefix npx: <http://purl.org/nanopub/x/>
 prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
-prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAeGHhPpt1GLzb_tInb87Wdnvep19Efieot9BBGoN_3TM&param_ReferredObject=http://purl.org/np/>
+prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=http://purl.org/np/>
 
 select distinct ?submitted_np ?authorname ?click_to_add_review where {
   graph ?submission_np_head {
