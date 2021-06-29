@@ -16,7 +16,7 @@ select distinct ?class_np ?class_name ?review_np ?reviewer ?aspect ?positivity ?
     ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
   }
   graph ?submission_np_pubinfo {
-    ?submission_np dct:creator ?_author_orcid_iri .
+    ?submission_np dct:creator ?_author_iri .
   }
   graph npa:graph {
     ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
