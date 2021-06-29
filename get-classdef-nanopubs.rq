@@ -58,5 +58,5 @@ select distinct ?class_np ?class_name ?authorname ?click_to_add_review where {
     ?class_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
 
-  bind(uri(concat("http://localhost:37373/publish?template=http://purl.org/np/RAeGHhPpt1GLzb_tInb87Wdnvep19Efieot9BBGoN_3TM&param_ReferredObject=", ?class_np)) as ?click_to_add_review)
+  bind(uri(concat("http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=", ?class_np)) as ?click_to_add_review)
 } order by ?authorname
