@@ -25,6 +25,12 @@ select distinct ?submitted_np ?authorname ?click_to_add_review where {
   optional { ?author foaf:name ?authorname . }
 
   filter not exists {
+    graph npa:graph { ?retraction npa:hasHeadGraph ?rh . ?retraction npa:hasValidSignatureForPublicKey ?pubkey . }
+    graph ?rh { ?retraction np:hasAssertion ?ra . }
+    graph ?ra { ?somebody npx:retracts ?submitted_np . }
+  }
+
+  filter not exists {
     graph npa:graph { ?newversion npa:hasHeadGraph ?nh . ?newversion npa:hasValidSignatureForPublicKey ?pubkey . }
     graph ?nh { ?newversion np:hasPublicationInfo ?ni . }
     graph ?ni { ?newversion npx:supersedes ?submission_np . }
