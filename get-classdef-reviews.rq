@@ -34,6 +34,13 @@ select distinct ?class_np ?class_name ?authorname ?review_np ?reviewername ?aspe
     graph ?ra { ?somebody npx:retracts ?submission_np . }
   }
 
+  graph ?submitted_np_head {
+    ?submitted_np np:hasAssertion ?submitted_np_assertion .
+  }
+  graph ?submitted_np_assertion {
+    ?submitted_np_s ?submitted_np_p ?class .
+  }
+
   graph ?sp_np_head {
     ?sp_np np:hasAssertion ?sp_np_assertion .
   }
