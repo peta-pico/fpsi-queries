@@ -58,7 +58,7 @@ select distinct ?submitted_np ?authorname ?review_np ?reviewername ?aspect ?posi
   }
   optional { ?__reviewer_iri foaf:name ?reviewername . }
   graph npa:graph {
-    ?review_np npa:hasValidSignatureForPublicKey ?pubkey .
+    ?review_np npa:hasValidSignatureForPublicKey ?reviewer_pubkey .
   }
 
   filter not exists {
