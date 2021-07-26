@@ -17,12 +17,12 @@ select distinct ?submitted_np ?authorname ?click_to_add_review where {
     ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
   }
   graph ?submission_np_pubinfo {
-    ?submission_np dct:creator ?author .
+    ?submission_np dct:creator ?__author_iri .
   }
   graph npa:graph {
     ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
-  optional { ?author foaf:name ?authorname . }
+  optional { ?__author_iri foaf:name ?authorname . }
 
   filter not exists {
     graph npa:graph { ?retraction npa:hasHeadGraph ?rh . ?retraction npa:hasValidSignatureForPublicKey ?pubkey . }
