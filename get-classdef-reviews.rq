@@ -70,7 +70,6 @@ select distinct ?class_np ?class_name ?authorname ?review_np ?reviewername ?aspe
       np:hasPublicationInfo ?review_np_pubinfo ;
       a np:Nanopublication .
   }
-  {
   graph ?review_np_assertion {
     ?r a lf:ReviewComment .
     ?r lf:refersTo ?class_np .
@@ -84,7 +83,6 @@ select distinct ?class_np ?class_name ?authorname ?review_np ?reviewername ?aspe
     ?r lf:hasCommentText ?textpre .
   }
   bind(strdt(replace(?textpre, "[\u0001-\u0008\u000B\u000C\u000E-\u001F]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?text)
-  }
   graph ?review_np_pubinfo {
     ?review_np dct:creator ?__reviewer_iri .
   }
