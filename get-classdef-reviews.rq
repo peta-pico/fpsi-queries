@@ -81,7 +81,6 @@ select distinct ?class_np ?class_name ?authorname ?review_np ?reviewername ?aspe
     values ?action { lf:ActionNeededComment lf:NoActionNeededComment lf:SuggestionComment }
     ?r lf:hasImpact ?impact .
     ?r lf:hasCommentText ?textpre .
-#    bind(strdt(replace(?textpre, "[\u0001-\u0008\u000B\u000C\u000E-\u001F]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?text)
   }
   graph ?review_np_pubinfo {
     ?review_np dct:creator ?__reviewer_iri .
@@ -102,4 +101,5 @@ select distinct ?class_np ?class_name ?authorname ?review_np ?reviewername ?aspe
     graph ?ra { ?somebody npx:retracts ?review_np . }
   }
 
+  bind(strdt(replace(?textpre, "[\u0001-\u0008\u000B\u000C\u000E-\u001F]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?text)
 } order by ?submitted_np ?review_np
