@@ -7,7 +7,7 @@ prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
 prefix lf: <https://w3id.org/linkflows/reviews/>
 
-select distinct ?class_np ?class_name ?authorname ?review_np ?reviewername ?aspect ?positivity ?action ?impact (replace(?textpre, "[\u0001-\u0008\u000B\u000C\u000E-\u001F]", "[NON-PRINTABLE-CHARACTER]") as ?text) where {
+select distinct ?class_np ?class_name ?authorname ?review_np ?reviewername ?aspect ?positivity ?action ?impact (?textpre as ?text) where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo .
