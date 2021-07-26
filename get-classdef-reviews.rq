@@ -16,9 +16,9 @@ select distinct ?class_np ?class_name ?authorname ?review_np ?reviewername ?aspe
     ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
   }
   graph ?submission_np_pubinfo {
-    ?submission_np dct:creator ?_author_iri .
+    ?submission_np dct:creator ?__author_iri .
   }
-  optional { ?_author_iri foaf:name ?authorname . }
+  optional { ?__author_iri foaf:name ?authorname . }
   graph npa:graph {
     ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
@@ -81,12 +81,12 @@ select distinct ?class_np ?class_name ?authorname ?review_np ?reviewername ?aspe
     values ?action { lf:ActionNeededComment lf:NoActionNeededComment lf:SuggestionComment }
     ?r lf:hasImpact ?impact .
     ?r lf:hasCommentText ?textpre .
+    bind(strdt(replace(?textpre, "[\u0001-\u0008\u000B\u000C\u000E-\u001F]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?text)
   }
-  bind(strdt(replace(?textpre, "[\u0001-\u0008\u000B\u000C\u000E-\u001F]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?text)
   graph ?review_np_pubinfo {
-    ?review_np dct:creator ?_reviewer_iri .
+    ?review_np dct:creator ?__reviewer_iri .
   }
-  optional { ?_reviewer_iri foaf:name ?reviewername . }
+  optional { ?__reviewer_iri foaf:name ?reviewername . }
   graph npa:graph {
     ?review_np npa:hasValidSignatureForPublicKey ?reviewer_pubkey .
   }
