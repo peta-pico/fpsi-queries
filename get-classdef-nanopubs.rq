@@ -8,7 +8,7 @@ prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
 prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=http://purl.org/np/>
 
-select distinct ?class_np ?class_name ?authorlink ?click_to_add_review where {
+select distinct ?class_np ?class_name ?author ?click_to_add_review where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo .
@@ -18,12 +18,13 @@ select distinct ?class_np ?class_name ?authorlink ?click_to_add_review where {
   }
   graph ?submission_np_pubinfo {
     ?submission_np dct:creator ?__author_iri .
+    bind(?__author_iri as ?author)
   }
   graph npa:graph {
     ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
-  optional { ?__author_iri foaf:name ?authorname . }
-  bind(strdt(concat('<a href="', ?__author_iri, '">', coalesce(?authorname, ?__author_iri), '</a>'), rdf:HTML) as ?authorlink)
+  optional { ?__author_iri foaf:name ?authorLabel . }
+  #bind(strdt(concat('<a href="', ?__author_iri, '">', coalesce(?authorname, ?__author_iri), '</a>'), rdf:HTML) as ?authorlink)
 
   graph ?submitted_np_head {
     ?submitted_np np:hasAssertion ?submitted_np_assertion .
