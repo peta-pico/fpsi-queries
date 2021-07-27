@@ -4,7 +4,6 @@ prefix np: <http://www.nanopub.org/nschema#>
 prefix npx: <http://purl.org/nanopub/x/>
 prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
-prefix lf: <https://w3id.org/linkflows/reviews/>
 
 prefix Syntax: <https://w3id.org/linkflows/reviews/SyntaxComment>
 
