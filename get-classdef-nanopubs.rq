@@ -1,4 +1,3 @@
-prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix foaf: <http://xmlns.com/foaf/0.1/>
 prefix dct: <http://purl.org/dc/terms/>
@@ -24,7 +23,6 @@ select distinct ?class_np ?class_name ?author ?authorLabel ?click_to_add_review 
     ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
   optional { ?__author_iri foaf:name ?authorLabel . }
-  #bind(strdt(concat('<a href="', ?__author_iri, '">', coalesce(?authorname, ?__author_iri), '</a>'), rdf:HTML) as ?authorlink)
 
   graph ?submitted_np_head {
     ?submitted_np np:hasAssertion ?submitted_np_assertion .
