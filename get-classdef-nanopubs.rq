@@ -22,7 +22,7 @@ select distinct ?class_np ?class_name ?author ?authorLabel ?click_to_add_review 
   graph npa:graph {
     ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
-  optional { ?__author_iri foaf:name ?authorLabel . }
+  optional { ?__author_iri foaf:namex ?authorLabel . }
 
   graph ?submitted_np_head {
     ?submitted_np np:hasAssertion ?submitted_np_assertion .
