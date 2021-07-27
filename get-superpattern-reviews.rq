@@ -5,7 +5,8 @@ prefix npx: <http://purl.org/nanopub/x/>
 prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
 
-prefix r: <https://w3id.org/linkflows/reviews/>
+prefix Syntax: <https://w3id.org/linkflows/reviews/SyntaxComment>
+prefix lf: <https://w3id.org/linkflows/reviews/>
 
 prefix respond: <http://localhost:37373/publish?template=http://purl.org/np/RAe785M0p3cxpVXp2dhVdspVyj3YMdDdb0JEQdKPjO96E&param_OtherComment=http://purl.org/np/>
 
