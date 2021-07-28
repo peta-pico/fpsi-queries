@@ -20,7 +20,7 @@ prefix ActionNeeded: <https://w3id.org/linkflows/reviews/ActionNeededComment>
 
 prefix lf: <https://w3id.org/linkflows/reviews/>
 
-select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?text where {
+select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?mentioning ?mentioningLabel ?text where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo .
@@ -89,6 +89,10 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
   graph ?review_np_assertion {
     ?r a lf:ReviewComment .
     ?r lf:refersTo ?class_np .
+    optional {
+      ?r lf:refersToMentioningOf ?mentioning .
+      bind(replace(replace(str(?mentioning), '^.*[/#]([^/#]+)[/#]?$', '$1'), '^(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?mentioningLabel)
+    }
     ?r a ?aspect .
     values ?aspect { lf:ContentComment lf:StyleComment lf:SyntaxComment }
     ?r a ?positivity .
