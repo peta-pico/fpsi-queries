@@ -8,7 +8,7 @@ prefix frbr: <http://purl.org/vocab/frbr/core#>
 
 prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=>
 
-select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_review where {
+select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_review ?add_reviewLabel where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo .
