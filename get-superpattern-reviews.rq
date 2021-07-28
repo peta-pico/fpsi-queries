@@ -21,7 +21,7 @@ prefix lf: <https://w3id.org/linkflows/reviews/>
 
 prefix respond: <http://localhost:37373/publish?template=http://purl.org/np/RAe785M0p3cxpVXp2dhVdspVyj3YMdDdb0JEQdKPjO96E&param_OtherComment=http://purl.org/np/>
 
-select distinct ?submitted_np ?author ?authorLabel ?review_np ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?text where {
+select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?text where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo ;
@@ -29,6 +29,7 @@ select distinct ?submitted_np ?author ?authorLabel ?review_np ?reviewer ?reviewe
   }
   graph ?submission_np_assertion {
     ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
+    bind(replace(str(?submitted_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?submitted_npLabel)
   }
   graph ?submission_np_pubinfo {
     ?submission_np dct:creator ?__author_iri .
@@ -54,6 +55,7 @@ select distinct ?submitted_np ?author ?authorLabel ?review_np ?reviewer ?reviewe
     ?review_np np:hasAssertion ?review_np_assertion ;
       np:hasPublicationInfo ?review_np_pubinfo ;
       a np:Nanopublication .
+    bind(replace(str(?review_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?review_npLabel)
   }
   graph ?review_np_assertion {
     ?r a lf:ReviewComment .
@@ -66,8 +68,8 @@ select distinct ?submitted_np ?author ?authorLabel ?review_np ?reviewer ?reviewe
     values ?action { lf:ActionNeededComment lf:NoActionNeededComment lf:SuggestionComment }
     ?r lf:hasImpact ?impact .
     ?r lf:hasCommentText ?textpre .
+    bind(strdt(replace(?textpre, "[^\n\t\r -􏿿]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?text)
   }
-  bind(strdt(replace(?textpre, "[^\n\t\r -􏿿]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?text)
   graph ?review_np_pubinfo {
     ?review_np dct:creator ?__reviewer_iri .
     bind(?__reviewer_iri as ?reviewer)
