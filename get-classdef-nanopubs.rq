@@ -8,7 +8,7 @@ prefix frbr: <http://purl.org/vocab/frbr/core#>
 
 prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=>
 
-select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_review ?add_reviewLabel where {
+select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_review ?add_reviewLabel ?superseding_np ?superseding_npLabel where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo .
@@ -70,4 +70,12 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_r
 
   bind(uri(concat(addreview:, ?class_np)) as ?add_review)
   bind('click here to add review' as ?add_reviewLabel)
+
+  optional {
+    graph npa:graph { ?superseding_np npa:hasHeadGraph ?sh . ?superseding_np npa:hasValidSignatureForPublicKey ?pubkey . }
+    graph ?sh { ?superseding_np np:hasPublicationInfo ?si . }
+    graph ?si { ?superseding_np npx:supersedes ?class_np . }
+    bind(replace(str(?superseding_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?superseding_npLabel)
+  }
+
 } order by ?authorLabel
