@@ -5,6 +5,7 @@ prefix npx: <http://purl.org/nanopub/x/>
 prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
 prefix lf: <https://w3id.org/linkflows/reviews/>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=>
 prefix addupdate: <http://localhost:37373/publish?template=http://purl.org/np/RAv68imZrEjfcp2rnEg1hzoBqEVc0cQMtp9_1Za0BxNM4&pitemplate1=http://purl.org/np/RAOGu9Lh0BD4tbIRB9RG6RGRA_ObDh75NTbIqaWgxxs8M&piparam1_np=>
@@ -31,6 +32,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
     ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
   optional { ?__author_iri foaf:name ?authorLabel . }
+  filter( ?authorLabel != "Cristina-Iulia Bucu"^^xsd:string )
 
   filter not exists {
     graph npa:graph { ?retraction npa:hasHeadGraph ?rh . ?retraction npa:hasValidSignatureForPublicKey ?pubkey . }

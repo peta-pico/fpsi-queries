@@ -5,6 +5,7 @@ prefix np: <http://www.nanopub.org/nschema#>
 prefix npx: <http://purl.org/nanopub/x/>
 prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
 prefix Syntax: <https://w3id.org/linkflows/reviews/SyntaxComment>
 prefix Style: <https://w3id.org/linkflows/reviews/StyleComment>
@@ -33,6 +34,7 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
     bind(?__author_iri as ?author)
   }
   optional { ?__author_iri foaf:name ?authorLabel . }
+  filter( ?authorLabel != "Cristina-Iulia Bucu"^^xsd:string )
   graph npa:graph {
     ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
@@ -108,6 +110,7 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
     bind(?__reviewer_iri as ?reviewer)
   }
   optional { ?__reviewer_iri foaf:name ?reviewerLabel . }
+  filter( ?reviewerLabel != "Cristina-Iulia Bucu"^^xsd:string )
   graph npa:graph {
     ?review_np npa:hasValidSignatureForPublicKey ?reviewer_pubkey .
   }
