@@ -80,7 +80,7 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_r
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
   }
 
-  bind(uri(concat(addupdate:, ?class_np, "&fill-all=", ?class_np)) as ?add_update)
+  bind(uri(concat(addupdate:, ?class_np, "&supersede=", ?class_np)) as ?add_update)
   bind(concat(coalesce(?authorLabel, "the author"), ' can click here to update in response to the reviews') as ?add_updateLabel)
 
 } order by ?authorLabel
