@@ -5,6 +5,7 @@ prefix np: <http://www.nanopub.org/nschema#>
 prefix npx: <http://purl.org/nanopub/x/>
 prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
+prefix lf: <https://w3id.org/linkflows/reviews/>
 
 prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=>
 prefix addupdate: <http://localhost:37373/publish?template=http://purl.org/np/RAdpgRpigXtt8iPV9uOPf3wIT3qzOI8Sg2Q72CNV8g-Yo&pitemplate1=http://purl.org/np/RAOGu9Lh0BD4tbIRB9RG6RGRA_ObDh75NTbIqaWgxxs8M&piparam1_np=>
@@ -75,11 +76,11 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_r
   optional {
     graph npa:graph { ?update_np npa:hasHeadGraph ?sh . ?update_np npa:hasValidSignatureForPublicKey ?pubkey . }
     graph ?sh { ?update_np np:hasPublicationInfo ?si . }
-    graph ?si { ?update_np npx:supersedes ?class_np . }
+    graph ?si { ?update_np lf:isUpdateOf ?class_np . }
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
   }
 
   bind(uri(concat(addupdate:, ?class_np, "&fill-all=", ?class_np)) as ?add_update)
-  bind('click here to publish update' as ?add_updateLabel)
+  bind(concat(coalesce(?authorLabel, "the author"), ' can click here to update in response to the reviews') as ?add_updateLabel)
 
 } order by ?authorLabel
