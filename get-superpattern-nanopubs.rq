@@ -9,7 +9,7 @@ prefix lf: <https://w3id.org/linkflows/reviews/>
 prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=>
 prefix addupdate: <http://localhost:37373/publish?template=http://purl.org/np/RAv68imZrEjfcp2rnEg1hzoBqEVc0cQMtp9_1Za0BxNM4&pitemplate1=http://purl.org/np/RAOGu9Lh0BD4tbIRB9RG6RGRA_ObDh75NTbIqaWgxxs8M&piparam1_np=>
 
-select distinct ?submitted_np ?submitted_npLabel ?is_update_of_npLabel ?author ?authorLabel ?add_review ?add_reviewLabel ?update_np ?update_npLabel ?add_update ?add_updateLabel where {
+select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_review ?add_reviewLabel ?update_np ?update_npLabel ?add_update ?add_updateLabel where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo ;
@@ -21,10 +21,10 @@ select distinct ?submitted_np ?submitted_npLabel ?is_update_of_npLabel ?author ?
   }
   graph ?submission_np_pubinfo {
     ?submission_np dct:creator ?__author_iri .
-    optional {
-      ?submission_np lf:isUpdateOf ?is_update_of_np .
-      bind(replace(str(?is_update_of_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?is_update_of_npLabel)
-    }
+    #optional {
+    #  ?submission_np lf:isUpdateOf ?is_update_of_np .
+    #  bind(replace(str(?is_update_of_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?is_update_of_npLabel)
+    #}
     bind(?__author_iri as ?author)
   }
   graph npa:graph {
