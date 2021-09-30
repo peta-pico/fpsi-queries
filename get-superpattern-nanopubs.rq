@@ -9,7 +9,7 @@ prefix lf: <https://w3id.org/linkflows/reviews/>
 prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=>
 prefix addupdate: <http://localhost:37373/publish?template=http://purl.org/np/RAv68imZrEjfcp2rnEg1hzoBqEVc0cQMtp9_1Za0BxNM4&pitemplate1=http://purl.org/np/RAOGu9Lh0BD4tbIRB9RG6RGRA_ObDh75NTbIqaWgxxs8M&piparam1_np=>
 
-select distinct ?submitted_np ?submitted_npLabel ?is_update_of_np ?is_update_of_npLabel ?author ?authorLabel ?add_review ?add_reviewLabel where {
+select distinct ?submitted_np ?submitted_npLabel ?is_update_of_np ?is_update_of_npLabel ?author ?authorLabel ?add_review ?add_reviewLabel ?update_np ?update_npLabel ?add_update ?add_updateLabel where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo ;
@@ -52,6 +52,14 @@ select distinct ?submitted_np ?submitted_npLabel ?is_update_of_np ?is_update_of_
   bind(uri(concat(addreview:, ?submitted_np)) as ?add_review)
   bind('click here to add review' as ?add_reviewLabel)
 
-  bind(uri(concat(addupdate:, ?submitted_np)) as ?add_update)
+  optional {
+    graph npa:graph { ?update_np npa:hasHeadGraph ?sh . ?update_np npa:hasValidSignatureForPublicKey ?pubkey . }
+    graph ?sh { ?update_np np:hasPublicationInfo ?si . }
+    graph ?si { ?update_np npx:supersedes ?submitted_np . }
+    bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
+  }
+
+  bind(uri(concat(addupdate:, ?submitted_np, "&fill-all=", ?submitted_np)) as ?add_update)
   bind(concat(coalesce(?authorLabel, "the author"), ' can click here to update the submission in response to the reviews') as ?add_updateLabel)
+
 } order by ?authorLabel
