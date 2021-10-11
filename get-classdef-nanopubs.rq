@@ -58,7 +58,7 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_r
     }
   }
 
-  bind(uri(concat(addupdate:, ?class_np, "&supersede=", ?class_np)) as ?add_update)
-  bind(concat(coalesce(?authorLabel, "the author"), ' can click here to update in response to the reviews') as ?add_updateLabel)
+  bind(if(bound(?update_np), "", uri(concat(addupdate:, ?class_np, "&supersede=", ?class_np))) as ?add_update)
+  bind(if(bound(?update_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to update in response to the reviews')) as ?add_updateLabel)
 
 } order by ?authorLabel

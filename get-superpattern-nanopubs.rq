@@ -42,9 +42,13 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
     graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey . } ?update_np np:hasPublicationInfo ?ui .
     graph ?ui { ?update_np lf:isUpdateOf ?submitted_np . }
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
+    filter not exists {
+      graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?ura .  # TODO: move into npa:graph
+      graph ?ura { ?somebody npx:retracts ?update_np . }
+    }
   }
 
-  bind(uri(concat(addupdate:, ?submitted_np, "&fill-all=", ?submitted_np)) as ?add_update)
-  bind(concat(coalesce(?authorLabel, "the author"), ' can click here to update in response to the reviews') as ?add_updateLabel)
+  bind(if(bound(?update_np), "", uri(concat(addupdate:, ?submitted_np, "&fill-all=", ?submitted_np))) as ?add_update)
+  bind(if(bound(?update_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to update in response to the reviews')) as ?add_updateLabel)
 
 } order by ?authorLabel
