@@ -12,71 +12,50 @@ prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RA
 prefix addupdate: <http://localhost:37373/publish?template=http://purl.org/np/RAdpgRpigXtt8iPV9uOPf3wIT3qzOI8Sg2Q72CNV8g-Yo&pitemplate1=http://purl.org/np/RAOGu9Lh0BD4tbIRB9RG6RGRA_ObDh75NTbIqaWgxxs8M&piparam1_np=>
 
 select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_review ?add_reviewLabel ?update_np ?update_npLabel ?add_update ?add_updateLabel where {
-  graph ?submission_np_head {
-    ?submission_np np:hasAssertion ?submission_np_assertion ;
-      np:hasPublicationInfo ?submission_np_pubinfo .
-  }
-  graph ?submission_np_assertion {
+
+  graph npa:graph { ?submission_np npa:hasValidSignatureForPublicKey ?pubkey . }
+    ?submission_np np:hasAssertion ?submission_np_a ; np:hasPublicationInfo ?submission_np_i .  # TODO: move into npa:graph
+  graph ?submission_np_a {
     ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
   }
-  graph ?submission_np_pubinfo {
+  graph ?submission_np_i {
     ?submission_np dct:creator ?__author_iri .
     bind(?__author_iri as ?author)
   }
-  graph npa:graph {
-    ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
+  filter not exists {
+    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?a .  # TODO: move into npa:graph
+    graph ?a { ?somebody npx:retracts ?submission_np . }
   }
+
   optional { ?__author_iri foaf:name ?authorLabel . }
   filter( ?authorLabel != "Cristina-Iulia Bucu"^^xsd:string )
 
-  graph ?submitted_np_head {
-    ?submitted_np np:hasAssertion ?submitted_np_assertion .
-  }
-  graph ?submitted_np_assertion {
-    ?submitted_np_s ?submitted_np_p ?class .
+    ?submitted_np np:hasAssertion ?submitted_np_a .  # TODO: move into npa:graph
+  graph ?submitted_np_a {
+    ?spi ?spi_pred ?class .
   }
 
-  filter not exists {
-    graph npa:graph { ?newversion npa:hasValidSignatureForPublicKey ?pubkey . } ?newversion np:hasPublicationInfo ?ni .  # TODO: move into npa:graph
-    graph ?ni { ?newversion npx:supersedes ?submission_np . }
-  }
-  filter not exists {
-    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?ra .  # TODO: move into npa:graph
-    graph ?ra { ?somebody npx:retracts ?submission_np . }
-  }
-
-  graph ?sp_np_head {
-    ?sp_np np:hasAssertion ?sp_np_assertion .
-  }
-  graph ?sp_np_assertion {
-    ?spi ?p ?class .
-  }
-  graph npa:graph {
-    ?sp_np npa:hasValidSignatureForPublicKey ?pubkey .
-  }
-
-  graph ?class_np_head {
-    ?class_np np:hasAssertion ?class_np_assertion ;
-      np:hasPublicationInfo ?class_np_pubinfo .
-    bind(replace(str(?class_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?class_npLabel)
-  }
-  graph ?class_np_assertion {
+  graph npa:graph { ?class_np npa:hasValidSignatureForPublicKey ?pubkey . }
+    ?class_np np:hasAssertion ?class_np_a ; np:hasPublicationInfo ?class_np_i .  # TODO: move into npa:graph
+  bind(replace(str(?class_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?class_npLabel)
+  graph ?class_np_a {
     ?class rdfs:label ?class_name .
   }
-  graph ?class_np_pubinfo {
+  graph ?class_np_i {
     ?class_np npx:introduces ?class .
-  }
-  graph npa:graph {
-    ?class_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
 
   bind(uri(concat(addreview:, ?class_np)) as ?add_review)
   bind('click here to add review' as ?add_reviewLabel)
 
   optional {
-    graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey . } ?update_np np:hasPublicationInfo ?si .  # TODO: move into npa:graph
-    graph ?si { ?update_np lf:isUpdateOf ?class_np . }
+    graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey . } ?update_np np:hasPublicationInfo ?i .  # TODO: move into npa:graph
+    graph ?i { ?update_np lf:isUpdateOf ?class_np . }
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
+    filter not exists {
+      graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?a .  # TODO: move into npa:graph
+      graph ?a { ?somebody npx:retracts ?update_np . }
+    }
   }
 
   bind(uri(concat(addupdate:, ?class_np, "&supersede=", ?class_np)) as ?add_update)
