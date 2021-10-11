@@ -23,24 +23,24 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
     bind(?__author_iri as ?author)
   }
   filter not exists {
-    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?a .  # TODO: move into npa:graph
-    graph ?a { ?somebody npx:retracts ?submission_np . }
+    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?sra .  # TODO: move into npa:graph
+    graph ?sra { ?somebody npx:retracts ?submission_np . }
   }
 
   optional { ?__author_iri foaf:name ?authorLabel . }
   filter( ?authorLabel != "Cristina-Iulia Bucu"^^xsd:string )
 
   filter not exists {
-    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?a .  # TODO: move into npa:graph
-    graph ?a { ?somebody npx:retracts ?submitted_np . }
+    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?dra .  # TODO: move into npa:graph
+    graph ?dra { ?somebody npx:retracts ?submitted_np . }
   }
 
   bind(uri(concat(addreview:, ?submitted_np)) as ?add_review)
   bind('click here to add review' as ?add_reviewLabel)
 
   optional {
-    graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey . } ?update_np np:hasPublicationInfo ?i .
-    graph ?i { ?update_np lf:isUpdateOf ?submitted_np . }
+    graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey . } ?update_np np:hasPublicationInfo ?ui .
+    graph ?ui { ?update_np lf:isUpdateOf ?submitted_np . }
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
   }
 

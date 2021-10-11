@@ -23,8 +23,8 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_r
     bind(?__author_iri as ?author)
   }
   filter not exists {
-    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?a .  # TODO: move into npa:graph
-    graph ?a { ?somebody npx:retracts ?submission_np . }
+    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?sra .  # TODO: move into npa:graph
+    graph ?sra { ?somebody npx:retracts ?submission_np . }
   }
 
   optional { ?__author_iri foaf:name ?authorLabel . }
@@ -49,12 +49,12 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_r
   bind('click here to add review' as ?add_reviewLabel)
 
   optional {
-    graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey . } ?update_np np:hasPublicationInfo ?i .  # TODO: move into npa:graph
-    graph ?i { ?update_np lf:isUpdateOf ?class_np . }
+    graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey . } ?update_np np:hasPublicationInfo ?ui .  # TODO: move into npa:graph
+    graph ?ui { ?update_np lf:isUpdateOf ?class_np . }
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
     filter not exists {
-      graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?a .  # TODO: move into npa:graph
-      graph ?a { ?somebody npx:retracts ?update_np . }
+      graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?ura .  # TODO: move into npa:graph
+      graph ?ura { ?somebody npx:retracts ?update_np . }
     }
   }
 

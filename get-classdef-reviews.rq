@@ -42,10 +42,6 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
   }
 
   filter not exists {
-    graph npa:graph { ?newversion npa:hasValidSignatureForPublicKey ?pubkey . } ?newversion np:hasPublicationInfo ?si .  # TODO: move into npa:graph
-    graph ?si { ?newversion npx:supersedes ?submission_np . }
-  }
-  filter not exists {
     graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?sa .  # TODO: move into npa:graph
     graph ?sa { ?somebody npx:retracts ?submission_np . }
   }
