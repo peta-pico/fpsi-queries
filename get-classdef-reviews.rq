@@ -4,6 +4,7 @@ prefix dct: <http://purl.org/dc/terms/>
 prefix np: <http://www.nanopub.org/nschema#>
 prefix npx: <http://purl.org/nanopub/x/>
 prefix npa: <http://purl.org/nanopub/admin/>
+prefix vp: <http://purl.org/nanopub/admin/hasValidSignatureForPublicKey>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
 
@@ -38,11 +39,11 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
   optional { ?__author_iri foaf:name ?authorLabel . }
   filter( ?authorLabel != "Cristina-Iulia Bucu"^^xsd:string )
   graph npa:graph {
-    ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
+    ?submission_np vp: ?pubkey .
   }
 
   filter not exists {
-    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?sa .  # TODO: move into npa:graph
+    graph npa:graph { ?retraction vp: ?pubkey . } ?retraction np:hasAssertion ?sa .  # TODO: move into npa:graph
     graph ?sa { ?somebody npx:retracts ?submission_np . }
   }
 
@@ -60,7 +61,7 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
     ?spi ?p ?class .
   }
   graph npa:graph {
-    ?sp_np npa:hasValidSignatureForPublicKey ?pubkey .
+    ?sp_np vp: ?pubkey .
   }
 
   graph ?class_np_head {
@@ -75,7 +76,7 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
     ?class_np npx:introduces ?class .
   }
   graph npa:graph {
-    ?class_np npa:hasValidSignatureForPublicKey ?pubkey .
+    ?class_np vp: ?pubkey .
   }
 
   graph ?review_np_head {
@@ -108,30 +109,30 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
   optional { ?__reviewer_iri foaf:name ?reviewerLabel . }
   filter( ?reviewerLabel != "Cristina-Iulia Bucu"^^xsd:string )
   graph npa:graph {
-    ?review_np npa:hasValidSignatureForPublicKey ?reviewer_pubkey .
+    ?review_np vp: ?reviewer_pubkey .
   }
 
   filter not exists {
-    graph npa:graph { ?newversion npa:hasValidSignatureForPublicKey ?reviewer_pubkey . } ?newversion np:hasPublicationInfo ?ri .  # TODO: move into npa:graph
+    graph npa:graph { ?newversion vp: ?reviewer_pubkey . } ?newversion np:hasPublicationInfo ?ri .  # TODO: move into npa:graph
     graph ?ri { ?newversion npx:supersedes ?review_np . }
   }
   filter not exists {
-    graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?reviewer_pubkey . } ?retraction np:hasAssertion ?ra .  # TODO: move into npa:graph
+    graph npa:graph { ?retraction vp: ?reviewer_pubkey . } ?retraction np:hasAssertion ?ra .  # TODO: move into npa:graph
     graph ?ra { ?somebody npx:retracts ?review_np . }
   }
 
   optional {
-    graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey . } ?update_np np:hasPublicationInfo ?xi .  # TODO: move into npa:graph
+    graph npa:graph { ?update_np vp: ?pubkey . } ?update_np np:hasPublicationInfo ?xi .  # TODO: move into npa:graph
     graph ?xi { ?update_np lf:isUpdateOf ?class_np . }
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
   }
 
   optional {
-    graph npa:graph { ?response_np npa:hasValidSignatureForPublicKey ?pubkey . } ?response_np np:hasAssertion ?respa .
+    graph npa:graph { ?response_np vp: ?pubkey . } ?response_np np:hasAssertion ?respa .
     graph ?respa { ?response_comment lf:isResponseTo ?review_np . }
     bind(replace(str(?response_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?response_npLabel)
     filter not exists {
-      graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?respra .  # TODO: move into npa:graph
+      graph npa:graph { ?retraction vp: ?pubkey . } ?retraction np:hasAssertion ?respra .  # TODO: move into npa:graph
       graph ?respra { ?somebody npx:retracts ?response_np . }
     }
   }
