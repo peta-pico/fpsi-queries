@@ -22,7 +22,7 @@ prefix lf: <https://w3id.org/linkflows/reviews/>
 
 prefix respond: <http://localhost:37373/publish?template=http://purl.org/np/RAe785M0p3cxpVXp2dhVdspVyj3YMdDdb0JEQdKPjO96E&param_OtherComment=>
 
-select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?mentioning ?mentioningLabel ?text ?add_response ?add_responseLabel where {
+select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?mentioning ?mentioningLabel ?text ?response_np ?response_npLabel ?add_response ?add_responseLabel where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo ;
@@ -99,7 +99,17 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?review_np
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
   }
 
-  bind(if(bound(?update_np), uri(concat(respond:, ?review_np, "&param_ReferredObject=", ?update_np)), concat(coalesce(?authorLabel, "the author"), ' can respond here once update is published')) as ?add_response)
-  bind(if(bound(?update_np), concat(coalesce(?authorLabel, "the author"), ' can click here to respond'), "") as ?add_responseLabel)
+  optional {
+    graph npa:graph { ?response_np npa:hasValidSignatureForPublicKey ?pubkey . } ?response_np np:hasAssertion ?respa .
+    graph ?respa { ?response_comment lf:isResponseTo ?review_np . }
+    bind(replace(str(?response_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?response_npLabel)
+    filter not exists {
+      graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?respra .  # TODO: move into npa:graph
+      graph ?respra { ?somebody npx:retracts ?response_np . }
+    }
+  }
+
+  bind(if(bound(?update_np), if(bound(?response_np), "", uri(concat(respond:, ?review_np, "&param_ReferredObject=", ?update_np))), concat(coalesce(?authorLabel, "the author"), ' can respond here once update is published')) as ?add_response)
+  bind(if(bound(?update_np), if(bound(?response_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to respond')), "") as ?add_responseLabel)
 
 } order by ?submitted_np ?review_np
