@@ -137,7 +137,7 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
     }
   }
 
-  bind(if(bound(?update_np), if(bound(?response_np), "", uri(concat(respond:, ?review_np, "&param_ReferredObject=", ?update_np))), concat(coalesce(?authorLabel, "the author"), ' can respond here once update is published')) as ?add_response)
-  bind(if(bound(?update_np), if(bound(?response_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to respond')), "") as ?add_responseLabel)
+  bind(if(bound(?response_np), "", uri(concat(respond:, ?review_np, "&param_ReferredObject=", coalesce(?update_np,?class_np)))) as ?add_response)
+  bind(if(bound(?update_np), if(bound(?response_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to respond')), concat(coalesce(?authorLabel, "the author"), ' can click here to respond if no update is needed (otherwise update class nanopub first)')) as ?add_responseLabel)
 
 } order by ?submitted_np ?review_np
