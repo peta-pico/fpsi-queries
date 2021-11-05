@@ -39,7 +39,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
   bind('click here to add review' as ?add_reviewLabel)
 
   optional {
-    graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey . } ?update_np np:hasPublicationInfo ?ui .
+    graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey2 . } ?update_np np:hasPublicationInfo ?ui .  # TODO: move into npa:graph; TODO: check pubkey
     graph ?ui { ?update_np lf:isUpdateOf ?submitted_np . }
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
     filter not exists {
