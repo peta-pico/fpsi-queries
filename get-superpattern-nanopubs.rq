@@ -43,7 +43,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
     graph ?ui { ?update_np lf:isUpdateOf ?submitted_np . }
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
     filter not exists {
-      graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?ura .  # TODO: move into npa:graph
+      graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey2 . } ?retraction np:hasAssertion ?ura .  # TODO: move into npa:graph
       graph ?ura { ?somebody npx:retracts ?update_np . }
     }
   }
