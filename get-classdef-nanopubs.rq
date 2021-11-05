@@ -56,6 +56,10 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?add_r
       graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey2 . } ?retraction np:hasAssertion ?ura .  # TODO: move into npa:graph
       graph ?ura { ?somebody npx:retracts ?update_np . }
     }
+    filter not exists {
+      graph npa:graph { ?superseding npa:hasValidSignatureForPublicKey ?pubkey2 . } ?superseding np:hasPublicationInfo ?usi .  # TODO: move into npa:graph
+      graph ?usi { ?superseding npx:supersedes ?update_np . }
+    }
   }
 
   bind(if(bound(?update_np), "", uri(concat(addupdate:, ?class_np, "&supersede=", ?class_np))) as ?add_update)
