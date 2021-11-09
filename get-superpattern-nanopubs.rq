@@ -6,11 +6,15 @@ prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
 prefix lf: <https://w3id.org/linkflows/reviews/>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix pso: <http://purl.org/spar/pso/>
+
+prefix Accepted: <http://purl.org/spar/pso/accepted-for-publication>
+prefix Rejected: <http://purl.org/spar/pso/rejected-for-publication>
 
 prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=>
 prefix addupdate: <http://localhost:37373/publish?template=http://purl.org/np/RAv68imZrEjfcp2rnEg1hzoBqEVc0cQMtp9_1Za0BxNM4&pitemplate1=http://purl.org/np/RAOGu9Lh0BD4tbIRB9RG6RGRA_ObDh75NTbIqaWgxxs8M&piparam1_np=>
 
-select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_review ?add_reviewLabel ?update_np ?update_npLabel ?add_update ?add_updateLabel where {
+select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_review ?add_reviewLabel ?update_np ?update_npLabel ?add_update ?add_updateLabel ?decision where {
   
   graph npa:graph { ?submission_np npa:hasValidSignatureForPublicKey ?pubkey . }
     ?submission_np np:hasAssertion ?submission_np_a ; np:hasPublicationInfo ?submission_np_i .  # TODO: move into npa:graph
@@ -49,6 +53,12 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
     filter not exists {
       graph npa:graph { ?superseding npa:hasValidSignatureForPublicKey ?pubkey2 . } ?superseding np:hasPublicationInfo ?usi .  # TODO: move into npa:graph
       graph ?usi { ?superseding npx:supersedes ?update_np . }
+    }
+    optional {
+      graph npa:graph { ?decision_np npa:hasValidSignatureForPublicKey "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCJlM78d80R+gFMoQB1IG3f7AbqqGOCIv4HmZd1cx1KgEWMUUpPsojFNvx84fC/TltcJ8F8JafnbhDXW2HM2MhdK4yC04ROEV1vIgSzjDicHfiqXvMqdPuMyQp4mmCEY7mUoeEW10mWZqjk+S9TnmiAQbFGcpExP8aosr2aTR7CSQIDAQAB"^^xsd:string . } ?decision_np np:hasAssertion ?da .  # TODO: move into npa:graph
+      graph ?da {
+        ?update_np pso:withStatus ?decision .
+      }
     }
   }
 
