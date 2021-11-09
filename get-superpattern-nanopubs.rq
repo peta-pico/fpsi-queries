@@ -15,7 +15,7 @@ prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RA
 prefix addupdate: <http://localhost:37373/publish?template=http://purl.org/np/RAv68imZrEjfcp2rnEg1hzoBqEVc0cQMtp9_1Za0BxNM4&pitemplate1=http://purl.org/np/RAOGu9Lh0BD4tbIRB9RG6RGRA_ObDh75NTbIqaWgxxs8M&piparam1_np=>
 
 select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_review ?add_reviewLabel ?update_np ?update_npLabel ?add_update ?add_updateLabel ?decision where {
-  
+
   graph npa:graph { ?submission_np npa:hasValidSignatureForPublicKey ?pubkey . }
     ?submission_np np:hasAssertion ?submission_np_a ; np:hasPublicationInfo ?submission_np_i .  # TODO: move into npa:graph
   graph ?submission_np_a {
@@ -42,6 +42,8 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
   bind(uri(concat(addreview:, ?submitted_np)) as ?add_review)
   bind('click here to add review' as ?add_reviewLabel)
 
+  bind("MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCJlM78d80R+gFMoQB1IG3f7AbqqGOCIv4HmZd1cx1KgEWMUUpPsojFNvx84fC/TltcJ8F8JafnbhDXW2HM2MhdK4yC04ROEV1vIgSzjDicHfiqXvMqdPuMyQp4mmCEY7mUoeEW10mWZqjk+S9TnmiAQbFGcpExP8aosr2aTR7CSQIDAQAB"^^xsd:string as ?editorkey)
+
   optional {
     graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey2 . } ?update_np np:hasPublicationInfo ?ui .  # TODO: move into npa:graph; TODO: check pubkey
     graph ?ui { ?update_np lf:isUpdateOf ?submitted_np . }
@@ -57,7 +59,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
     }
     filter(!bound(?superseding))
     optional {
-      graph npa:graph { ?decision_np npa:hasValidSignatureForPublicKey "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCJlM78d80R+gFMoQB1IG3f7AbqqGOCIv4HmZd1cx1KgEWMUUpPsojFNvx84fC/TltcJ8F8JafnbhDXW2HM2MhdK4yC04ROEV1vIgSzjDicHfiqXvMqdPuMyQp4mmCEY7mUoeEW10mWZqjk+S9TnmiAQbFGcpExP8aosr2aTR7CSQIDAQAB"^^xsd:string . } ?decision_np np:hasAssertion ?da .  # TODO: move into npa:graph
+      graph npa:graph { ?decision_np npa:hasValidSignatureForPublicKey ?editorkey . } ?decision_np np:hasAssertion ?da .  # TODO: move into npa:graph
       graph ?da {
         ?update_np pso:withStatus ?decision .
       }
