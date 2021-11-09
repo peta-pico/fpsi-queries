@@ -10,9 +10,9 @@ prefix Syntax: <https://w3id.org/linkflows/reviews/SyntaxComment>
 prefix Style: <https://w3id.org/linkflows/reviews/StyleComment>
 prefix Content: <https://w3id.org/linkflows/reviews/ContentComment>
 
-prefix Negative: <https://w3id.org/linkflows/reviews/NegativeComment>
-prefix Neutral: <https://w3id.org/linkflows/reviews/NeutralComment>
-prefix Positive: <https://w3id.org/linkflows/reviews/PositiveComment>
+prefix Neg: <https://w3id.org/linkflows/reviews/NegativeComment>
+prefix Neutr: <https://w3id.org/linkflows/reviews/NeutralComment>
+prefix Pos: <https://w3id.org/linkflows/reviews/PositiveComment>
 
 prefix NoActionNeeded: <https://w3id.org/linkflows/reviews/NoActionNeededComment>
 prefix Suggestion: <https://w3id.org/linkflows/reviews/SuggestionComment>
@@ -30,7 +30,7 @@ prefix lf: <https://w3id.org/linkflows/reviews/>
 
 prefix respond: <http://localhost:37373/publish?template=http://purl.org/np/RAe785M0p3cxpVXp2dhVdspVyj3YMdDdb0JEQdKPjO96E&param_OtherComment=>
 
-select distinct ?subm_np ?subm_npLabel ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?mentioning ?mentioningLabel ?text ?resp_np ?resp_npLabel ?add_response ?response_text ?agreement ?addressed ?add_responseLabel where {
+select distinct ?subm_np ?subm_npLabel ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?pos ?action ?imp ?mentioning ?mentioningLabel ?text ?resp_np ?resp_npLabel ?add_response ?response_text ?agreement ?addressed ?add_responseLabel where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo ;
@@ -74,11 +74,11 @@ select distinct ?subm_np ?subm_npLabel ?author ?authorLabel ?review_np ?review_n
     }
     ?r a ?aspect .
     values ?aspect { lf:ContentComment lf:StyleComment lf:SyntaxComment }
-    ?r a ?positivity .
-    values ?positivity { lf:PositiveComment lf:NeutralComment lf:NegativeComment }
+    ?r a ?pos .
+    values ?pos { lf:PositiveComment lf:NeutralComment lf:NegativeComment }
     ?r a ?action .
     values ?action { lf:ActionNeededComment lf:NoActionNeededComment lf:SuggestionComment }
-    ?r lf:hasImpact ?impact .
+    ?r lf:hasImpact ?imp .
     ?r lf:hasCommentText ?textpre .
     bind(strdt(replace(?textpre, "[^\n\t\r -􏿿]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?text)
   }
