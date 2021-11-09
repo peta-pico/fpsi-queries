@@ -12,19 +12,27 @@ prefix Syntax: <https://w3id.org/linkflows/reviews/SyntaxComment>
 prefix Style: <https://w3id.org/linkflows/reviews/StyleComment>
 prefix Content: <https://w3id.org/linkflows/reviews/ContentComment>
 
-prefix Negative: <https://w3id.org/linkflows/reviews/NegativeComment>
-prefix Neutral: <https://w3id.org/linkflows/reviews/NeutralComment>
-prefix Positive: <https://w3id.org/linkflows/reviews/PositiveComment>
+prefix Neg: <https://w3id.org/linkflows/reviews/NegativeComment>
+prefix Neutr: <https://w3id.org/linkflows/reviews/NeutralComment>
+prefix Pos: <https://w3id.org/linkflows/reviews/PositiveComment>
 
 prefix NoActionNeeded: <https://w3id.org/linkflows/reviews/NoActionNeededComment>
 prefix Suggestion: <https://w3id.org/linkflows/reviews/SuggestionComment>
 prefix ActionNeeded: <https://w3id.org/linkflows/reviews/ActionNeededComment>
 
+prefix Addressed: <https://w3id.org/linkflows/reviews/PointAddressedComment>
+prefix PartiallyAddressed: <https://w3id.org/linkflows/reviews/PointPartiallyAddressedComment>
+prefix NotAddressed: <https://w3id.org/linkflows/reviews/PointNotAddressedComment>
+
+prefix Agreed: <https://w3id.org/linkflows/reviews/AgreementComment>
+prefix PartialAgreed: <https://w3id.org/linkflows/reviews/PartialAgreementComment>
+prefix Disagreed: <https://w3id.org/linkflows/reviews/DisagreementComment>
+
 prefix lf: <https://w3id.org/linkflows/reviews/>
 
 prefix respond: <http://localhost:37373/publish?template=http://purl.org/np/RAe785M0p3cxpVXp2dhVdspVyj3YMdDdb0JEQdKPjO96E&param_OtherComment=>
 
-select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?mentioning ?mentioningLabel ?text ?response_np ?response_npLabel ?add_response ?add_responseLabel where {
+select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?pos ?action ?imp ?mentioning ?mentioningLabel ?text ?resp_np ?resp_npLabel ?resp_text ?agreement ?addressed ?add_resp ?add_respLabel where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo .
@@ -67,7 +75,7 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
   graph ?class_np_head {
     ?class_np np:hasAssertion ?class_np_assertion ;
       np:hasPublicationInfo ?class_np_pubinfo .
-    bind(replace(str(?class_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?class_npLabel)
+    bind(replace(str(?class_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?class_npLabel)
   }
   graph ?class_np_assertion {
     ?class rdfs:label ?class_name .
@@ -83,7 +91,7 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
     ?review_np np:hasAssertion ?review_np_assertion ;
       np:hasPublicationInfo ?review_np_pubinfo ;
       a np:Nanopublication .
-    bind(replace(str(?review_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?review_npLabel)
+    bind(replace(str(?review_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?review_npLabel)
   }
   graph ?review_np_assertion {
     ?r a lf:ReviewComment .
@@ -94,11 +102,11 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
     }
     ?r a ?aspect .
     values ?aspect { lf:ContentComment lf:StyleComment lf:SyntaxComment }
-    ?r a ?positivity .
-    values ?positivity { lf:PositiveComment lf:NeutralComment lf:NegativeComment }
+    ?r a ?pos .
+    values ?pos { lf:PositiveComment lf:NeutralComment lf:NegativeComment }
     ?r a ?action .
     values ?action { lf:ActionNeededComment lf:NoActionNeededComment lf:SuggestionComment }
-    ?r lf:hasImpact ?impact .
+    ?r lf:hasImpact ?imp .
     ?r lf:hasCommentText ?textpre .
   }
   bind(strdt(replace(?textpre, "[^\n\t\r -􏿿]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?text)
@@ -124,20 +132,28 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
   optional {
     graph npa:graph { ?update_np vp: ?pubkey . } ?update_np np:hasPublicationInfo ?xi .  # TODO: move into npa:graph
     graph ?xi { ?update_np lf:isUpdateOf ?class_np . }
-    bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
+    bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?update_npLabel)
   }
 
   optional {
-    graph npa:graph { ?response_np vp: ?pubkey . } ?response_np np:hasAssertion ?respa .
-    graph ?respa { ?response_comment lf:isResponseTo ?review_np . }
-    bind(replace(str(?response_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?response_npLabel)
+    graph npa:graph { ?resp_np vp: ?pubkey . } ?resp_np np:hasAssertion ?respa .
+    graph ?respa {
+      ?resp_comment lf:isResponseTo ?review_np ;
+        lf:hasCommentText ?resp_textpre .
+      bind(strdt(replace(?resp_textpre, "[^\n\t\r -􏿿]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?resp_text)
+      ?resp_comment a ?agreement .
+      values ?agreement { lf:AgreementComment lf:DisagreementComment lf:PartialAgreementComment }
+      ?resp_comment a ?addressed .
+      values ?addressed { lf:PointAddressedComment lf:PointNotAddressedComment lf:PointPartiallyAddressedComment }
+    }
+    bind(replace(str(?resp_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?resp_npLabel)
     filter not exists {
       graph npa:graph { ?retraction vp: ?pubkey . } ?retraction np:hasAssertion ?respra .  # TODO: move into npa:graph
-      graph ?respra { ?somebody npx:retracts ?response_np . }
+      graph ?respra { ?somebody npx:retracts ?resp_np . }
     }
   }
 
-  bind(if(bound(?response_np), "", uri(concat(respond:, ?review_np, "&param_ReferredObject=", coalesce(?update_np,?class_np)))) as ?add_response)
-  bind(if(bound(?update_np), if(bound(?response_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to respond')), concat(coalesce(?authorLabel, "the author"), ' can click here to respond if no update is needed (otherwise update class nanopub first)')) as ?add_responseLabel)
+  bind(if(bound(?resp_np), "", uri(concat(respond:, ?review_np, "&param_ReferredObject=", coalesce(?update_np,?class_np)))) as ?add_resp)
+  bind(if(bound(?update_np), if(bound(?resp_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to respond')), concat(coalesce(?authorLabel, "the author"), ' can click here to respond if no update is needed (otherwise update class nanopub first)')) as ?add_respLabel)
 
 } order by ?submitted_np ?review_np
