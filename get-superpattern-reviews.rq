@@ -30,33 +30,33 @@ prefix lf: <https://w3id.org/linkflows/reviews/>
 
 prefix respond: <http://localhost:37373/publish?template=http://purl.org/np/RAe785M0p3cxpVXp2dhVdspVyj3YMdDdb0JEQdKPjO96E&param_OtherComment=>
 
-select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?mentioning ?mentioningLabel ?text ?response_np ?response_npLabel ?add_response ?response_text ?agreement ?addressed ?add_responseLabel where {
-  graph ?subm_np_head {
-    ?subm_np np:hasAssertion ?subm_np_assertion ;
-      np:hasPublicationInfo ?subm_np_pubinfo ;
+select distinct ?subm_np ?subm_npLabel ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?positivity ?action ?impact ?mentioning ?mentioningLabel ?text ?resp_np ?resp_npLabel ?add_response ?response_text ?agreement ?addressed ?add_responseLabel where {
+  graph ?submission_np_head {
+    ?submission_np np:hasAssertion ?submission_np_assertion ;
+      np:hasPublicationInfo ?submission_np_pubinfo ;
       a np:Nanopublication .
   }
-  graph ?subm_np_assertion {
-    ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
-    bind(replace(str(?submitted_np), '^.*(RA[a-zA-Z0-9-_]{5})[a-zA-Z0-9-_]{38}$', '$1') as ?submitted_npLabel)
+  graph ?submission_np_assertion {
+    ?subm_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
+    bind(replace(str(?subm_np), '^.*(RA[a-zA-Z0-9-_]{5})[a-zA-Z0-9-_]{38}$', '$1') as ?subm_npLabel)
   }
-  graph ?subm_np_pubinfo {
-    ?subm_np dct:creator ?__author_iri .
+  graph ?submission_np_pubinfo {
+    ?submission_np dct:creator ?__author_iri .
     bind(?__author_iri as ?author)
   }
   optional { ?__author_iri foaf:name ?authorLabel . }
   filter( ?authorLabel != "Cristina-Iulia Bucu"^^xsd:string )
   graph npa:graph {
-    ?subm_np npa:hasValidSignatureForPublicKey ?pubkey .
+    ?submission_np npa:hasValidSignatureForPublicKey ?pubkey .
   }
 
   filter not exists {
     graph npa:graph { ?newversion npa:hasValidSignatureForPublicKey ?pubkey . } ?newversion np:hasPublicationInfo ?si .  # TODO: move into npa:graph
-    graph ?si { ?newversion npx:supersedes ?subm_np . }
+    graph ?si { ?newversion npx:supersedes ?submission_np . }
   }
   filter not exists {
     graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?sa .  # TODO: move into npa:graph
-    graph ?sa { ?somebody npx:retracts ?subm_np . }
+    graph ?sa { ?somebody npx:retracts ?submission_np . }
   }
 
   graph ?review_np_head {
@@ -67,7 +67,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?review_np
   }
   graph ?review_np_assertion {
     ?r a lf:ReviewComment .
-    ?r lf:refersTo ?submitted_np .
+    ?r lf:refersTo ?subm_np .
     optional {
       ?r lf:refersToMentioningOf ?mentioning .
       bind(replace(replace(str(?mentioning), '^.*[/#]([^/#]+)[/#]?$', '$1'), '^(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?mentioningLabel)
@@ -103,7 +103,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?review_np
 
   optional {
     graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey2 . } ?update_np np:hasPublicationInfo ?xi .  # TODO: move into npa:graph; TODO: check pubkey
-    graph ?xi { ?update_np lf:isUpdateOf ?submitted_np . }
+    graph ?xi { ?update_np lf:isUpdateOf ?subm_np . }
     bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
     filter not exists {
       graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey2 . } ?retraction np:hasAssertion ?ura .  # TODO: move into npa:graph
@@ -116,7 +116,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?review_np
   }
 
   optional {
-    graph npa:graph { ?response_np npa:hasValidSignatureForPublicKey ?pubkey . } ?response_np np:hasAssertion ?respa .
+    graph npa:graph { ?resp_np npa:hasValidSignatureForPublicKey ?pubkey . } ?resp_np np:hasAssertion ?respa .
     graph ?respa {
       ?response_comment lf:isResponseTo ?review_np ;
         lf:hasCommentText ?response_textpre .
@@ -126,14 +126,14 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?review_np
       ?response_comment a ?addressed .
       values ?addressed { lf:PointAddressedComment lf:PointNotAddressedComment lf:PointPartiallyAddressedComment }
     }
-    bind(replace(str(?response_np), '^.*(RA[a-zA-Z0-9-_]{5})[a-zA-Z0-9-_]{38}$', '$1') as ?response_npLabel)
+    bind(replace(str(?resp_np), '^.*(RA[a-zA-Z0-9-_]{5})[a-zA-Z0-9-_]{38}$', '$1') as ?resp_npLabel)
     filter not exists {
       graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey . } ?retraction np:hasAssertion ?respra .  # TODO: move into npa:graph
-      graph ?respra { ?somebody npx:retracts ?response_np . }
+      graph ?respra { ?somebody npx:retracts ?resp_np . }
     }
   }
 
-  bind(if(bound(?update_np), if(bound(?response_np), "", uri(concat(respond:, ?review_np, "&param_ReferredObject=", ?update_np))), concat(coalesce(?authorLabel, "the author"), ' can respond here once update is published')) as ?add_response)
-  bind(if(bound(?update_np), if(bound(?response_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to respond')), "") as ?add_responseLabel)
+  bind(if(bound(?update_np), if(bound(?resp_np), "", uri(concat(respond:, ?review_np, "&param_ReferredObject=", ?update_np))), concat(coalesce(?authorLabel, "the author"), ' can respond here once update is published')) as ?add_response)
+  bind(if(bound(?update_np), if(bound(?resp_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to respond')), "") as ?add_responseLabel)
 
-} order by ?submitted_np ?review_np
+} order by ?subm_np ?review_np
