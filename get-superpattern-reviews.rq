@@ -30,7 +30,7 @@ prefix lf: <https://w3id.org/linkflows/reviews/>
 
 prefix respond: <http://localhost:37373/publish?template=http://purl.org/np/RAe785M0p3cxpVXp2dhVdspVyj3YMdDdb0JEQdKPjO96E&param_OtherComment=>
 
-select distinct ?subm_np ?subm_npLabel ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?pos ?action ?imp ?mention ?mentionLabel ?text ?resp_np ?resp_npLabel ?add_response ?response_text ?agreement ?addressed ?add_responseLabel where {
+select distinct ?subm_np ?subm_npLabel ?author ?authorLabel ?review_np ?review_npLabel ?reviewer ?reviewerLabel ?aspect ?pos ?action ?imp ?mention ?mentionLabel ?text ?resp_np ?resp_npLabel ?resp_text ?agreement ?addressed ?add_resp ?add_respLabel where {
   graph ?submission_np_head {
     ?submission_np np:hasAssertion ?submission_np_assertion ;
       np:hasPublicationInfo ?submission_np_pubinfo ;
@@ -118,12 +118,12 @@ select distinct ?subm_np ?subm_npLabel ?author ?authorLabel ?review_np ?review_n
   optional {
     graph npa:graph { ?resp_np npa:hasValidSignatureForPublicKey ?pubkey . } ?resp_np np:hasAssertion ?respa .
     graph ?respa {
-      ?response_comment lf:isResponseTo ?review_np ;
-        lf:hasCommentText ?response_textpre .
-      bind(strdt(replace(?response_textpre, "[^\n\t\r -􏿿]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?response_text)
-      ?response_comment a ?agreement .
+      ?resp_comment lf:isResponseTo ?review_np ;
+        lf:hasCommentText ?resp_textpre .
+      bind(strdt(replace(?resp_textpre, "[^\n\t\r -􏿿]", "[NON-PRINTABLE-CHARACTER]"), xsd:string) as ?resp_text)
+      ?resp_comment a ?agreement .
       values ?agreement { lf:AgreementComment lf:DisagreementComment lf:PartialAgreementComment }
-      ?response_comment a ?addressed .
+      ?resp_comment a ?addressed .
       values ?addressed { lf:PointAddressedComment lf:PointNotAddressedComment lf:PointPartiallyAddressedComment }
     }
     bind(replace(str(?resp_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?resp_npLabel)
@@ -133,7 +133,7 @@ select distinct ?subm_np ?subm_npLabel ?author ?authorLabel ?review_np ?review_n
     }
   }
 
-  bind(if(bound(?update_np), if(bound(?resp_np), "", uri(concat(respond:, ?review_np, "&param_ReferredObject=", ?update_np))), concat(coalesce(?authorLabel, "the author"), ' can respond here once update is published')) as ?add_response)
-  bind(if(bound(?update_np), if(bound(?resp_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to respond')), "") as ?add_responseLabel)
+  bind(if(bound(?update_np), if(bound(?resp_np), "", uri(concat(respond:, ?review_np, "&param_ReferredObject=", ?update_np))), concat(coalesce(?authorLabel, "the author"), ' can respond here once update is published')) as ?add_resp)
+  bind(if(bound(?update_np), if(bound(?resp_np), "", concat(coalesce(?authorLabel, "the author"), ' can click here to respond')), "") as ?add_respLabel)
 
 } order by ?subm_np ?review_np
