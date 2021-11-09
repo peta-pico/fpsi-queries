@@ -16,7 +16,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
     ?submission_np np:hasAssertion ?submission_np_a ; np:hasPublicationInfo ?submission_np_i .  # TODO: move into npa:graph
   graph ?submission_np_a {
     ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
-    bind(replace(str(?submitted_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?submitted_npLabel)
+    bind(replace(str(?submitted_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?submitted_npLabel)
   }
   graph ?submission_np_i {
     ?submission_np dct:creator ?__author_iri .
@@ -41,7 +41,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
   optional {
     graph npa:graph { ?update_np npa:hasValidSignatureForPublicKey ?pubkey2 . } ?update_np np:hasPublicationInfo ?ui .  # TODO: move into npa:graph; TODO: check pubkey
     graph ?ui { ?update_np lf:isUpdateOf ?submitted_np . }
-    bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{8})[a-zA-Z0-9-_]{35}$', '$1') as ?update_npLabel)
+    bind(replace(str(?update_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?update_npLabel)
     filter not exists {
       graph npa:graph { ?retraction npa:hasValidSignatureForPublicKey ?pubkey2 . } ?retraction np:hasAssertion ?ura .  # TODO: move into npa:graph
       graph ?ura { ?somebody npx:retracts ?update_np . }
