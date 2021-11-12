@@ -14,7 +14,7 @@ prefix Rejected: <http://purl.org/spar/pso/rejected-for-publication>
 prefix addreview: <http://localhost:37373/publish?template=http://purl.org/np/RAmIPyDSP2ZrKM3PaAjSOIhkbZJ0CV6lRkh3Mlv7AzFiw&param_ReferredObject=>
 prefix addupdate: <http://localhost:37373/publish?template=http://purl.org/np/RAv68imZrEjfcp2rnEg1hzoBqEVc0cQMtp9_1Za0BxNM4&pitemplate1=http://purl.org/np/RAOGu9Lh0BD4tbIRB9RG6RGRA_ObDh75NTbIqaWgxxs8M&piparam1_np=>
 
-select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_review ?add_reviewLabel ?update_np ?update_npLabel ?add_update ?add_updateLabel ?decision where {
+select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_review ?add_reviewLabel ?update_np ?update_npLabel ?add_update ?add_updateLabel ?decision_np ?decision_npLabel ?decision where {
 
   graph npa:graph { ?submission_np npa:hasValidSignatureForPublicKey ?pubkey . }
     ?submission_np np:hasAssertion ?submission_np_a ; np:hasPublicationInfo ?submission_np_i .  # TODO: move into npa:graph
@@ -61,6 +61,7 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
       graph ?da {
         ?update_np pso:withStatus ?decision .
       }
+      bind(replace(str(?decision_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?decision_npLabel)
     }
   }
 
