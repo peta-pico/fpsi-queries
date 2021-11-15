@@ -5,6 +5,7 @@ prefix npx: <http://purl.org/nanopub/x/>
 prefix npa: <http://purl.org/nanopub/admin/>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix pso: <http://purl.org/spar/pso/>
 
 prefix Syntax: <https://w3id.org/linkflows/reviews/SyntaxComment>
 prefix Style: <https://w3id.org/linkflows/reviews/StyleComment>
@@ -37,7 +38,8 @@ select distinct ?subm_np ?subm_npLabel ?author ?authorLabel ?review_np ?review_n
       a np:Nanopublication .
   }
   graph ?submission_np_assertion {
-    ?subm_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
+    ?subm_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> ;
+      pso:withStatus pso:submitted .
     bind(replace(str(?subm_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?subm_npLabel)
   }
   graph ?submission_np_pubinfo {

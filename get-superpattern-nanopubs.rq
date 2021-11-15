@@ -19,7 +19,8 @@ select distinct ?submitted_np ?submitted_npLabel ?author ?authorLabel ?add_revie
   graph npa:graph { ?submission_np npa:hasValidSignatureForPublicKey ?pubkey . }
     ?submission_np np:hasAssertion ?submission_np_a ; np:hasPublicationInfo ?submission_np_i .  # TODO: move into npa:graph
   graph ?submission_np_a {
-    ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
+    ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> ;
+      pso:withStatus pso:submitted .
     bind(replace(str(?submitted_np), '^.*(RA[a-zA-Z0-9-_]{4})[a-zA-Z0-9-_]{39}$', '$1') as ?submitted_npLabel)
   }
   graph ?submission_np_i {

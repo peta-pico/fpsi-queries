@@ -7,6 +7,7 @@ prefix npa: <http://purl.org/nanopub/admin/>
 prefix vp: <http://purl.org/nanopub/admin/hasValidSignatureForPublicKey>
 prefix frbr: <http://purl.org/vocab/frbr/core#>
 prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix pso: <http://purl.org/spar/pso/>
 
 prefix Syntax: <https://w3id.org/linkflows/reviews/SyntaxComment>
 prefix Style: <https://w3id.org/linkflows/reviews/StyleComment>
@@ -38,7 +39,8 @@ select distinct ?class_np ?class_npLabel ?class_name ?author ?authorLabel ?revie
       np:hasPublicationInfo ?submission_np_pubinfo .
   }
   graph ?submission_np_assertion {
-    ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> .
+    ?submitted_np frbr:partOf <https://w3id.org/linkflows/formalization-papers/DataScienceSpecialIssue> ;
+      pso:withStatus pso:submitted .
   }
   graph ?submission_np_pubinfo {
     ?submission_np dct:creator ?__author_iri .
